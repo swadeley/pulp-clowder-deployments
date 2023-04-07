@@ -44,6 +44,19 @@ objects:
         limits:
           memory: "128Mi"
           cpu: "500m"
+- apiVersion: repo-manager.pulpproject.org/v1alpha1
+  kind: Pulp
+  metadata:
+    name: pulp
+    namespace: "${ENV_NAME}"
+  spec:
+    api:
+      replicas: 2
+    content:
+      replicas: 2
+    worker:
+      replicas: 2
+    ingress_type: route
 - apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdApp
   metadata:
