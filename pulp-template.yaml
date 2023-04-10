@@ -73,6 +73,7 @@ objects:
     database:
       name: pulp-db
       version: 15
+    inMemoryDb: true
 parameters:
   - name: ENV_NAME
     description: Specify your (ephemeral) namespace
