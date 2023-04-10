@@ -74,6 +74,8 @@ objects:
       name: pulp-db
       version: 15
     inMemoryDb: true
+    objectStore:
+      - pulp-bucket
 parameters:
   - name: ENV_NAME
     description: Specify your (ephemeral) namespace
