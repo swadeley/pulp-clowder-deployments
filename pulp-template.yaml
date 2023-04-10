@@ -48,7 +48,7 @@ objects:
   kind: Pulp
   metadata:
     name: pulp
-    namespace: "${ENV_NAME}"
+  # namespace: "${ENV_NAME}"
   spec:
     api:
       replicas: 2
