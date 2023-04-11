@@ -1,8 +1,8 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  app: pulp-example
-  template: pulp-example
+  app: pulp-clowdapp
+  template: pulp-clowdapp
 metadata:
   annotations:
     description: |-
@@ -21,7 +21,7 @@ metadata:
     iconClass: icon-python
   labels:
     samples.operator.openshift.io/managed: "false"
-  name: pulp-example
+  name: pulp-clowdapp
 objects:
 - apiVersion: operators.coreos.com/v1alpha1
   kind: Subscription
@@ -55,8 +55,8 @@ objects:
     - name: pulp-cr-generator
       podSpec:
         # dummy container
-        image: "quay.io/fedora/fedora:latest"
-        command: ['vi']
+        image: "docker.io/library/postgres:latest"
+        command: ['sleep', '9999999999']
     database:
       name: pulp-db
       version: 15
