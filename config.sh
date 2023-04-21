@@ -50,6 +50,8 @@ spec:
     replicas: 2
   worker:
     replicas: 2
+  web:
+    replicas: 2
   ingress_type: nodeport
   pulp_settings:
     aws_s3_endpoint_url: http://${S3_HOSTNAME}:9000
