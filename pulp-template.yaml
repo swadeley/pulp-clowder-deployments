@@ -23,6 +23,96 @@ metadata:
     samples.operator.openshift.io/managed: "false"
   name: pulp-clowdapp
 objects:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: config-sh-map
+  data:
+    config-sh-file: |
+      #!/bin/bash
+      export PATH=${PATH}:/tmp/bin
+      mkdir /tmp/bin
+      cd /tmp/bin
+      wget wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+      mv jq-linux64 jq
+      chmod +x jq
+
+      # https://docs.pulpproject.org/pulp_operator/configuring/storage/#configuring-pulp-operator-to-use-object-storage
+      S3_ACCESS_KEY_ID=$(cat /cdapp/cdappconfig.json | jq -r '.objectStore.buckets[0].accessKey')
+      S3_SECRET_ACCESS_KEY=$(cat /cdapp/cdappconfig.json | jq -r '.objectStore.buckets[0].secretKey')
+      S3_BUCKET_NAME=$(cat /cdapp/cdappconfig.json | jq -r '.objectStore.buckets[0].name')
+      #S3_REGION='us-east-1'
+      S3_HOSTNAME=$(cat /cdapp/cdappconfig.json | jq -r '.objectStore.hostname')
+
+      # FIXME: Find out why these 2 `kubectl apply` commands keep getting killed.
+      # It is hard to debug inside the container. OOM could be to blame, but we cannot run `dmesg`.
+      until kubectl apply -f- <<EOF
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: 'test-s3'
+      stringData:
+        s3-access-key-id: $S3_ACCESS_KEY_ID
+        s3-secret-access-key: $S3_SECRET_ACCESS_KEY
+        s3-bucket-name: $S3_BUCKET_NAME
+      EOF
+      do
+        echo "Trying kubectl apply again"
+        sleep 1
+      done
+      # s3-region: $S3_REGION
+      
+      # https://docs.pulpproject.org/pulp_operator/configuring/cache/#configuring-pulp-operator-to-use-an-external-redis-installation
+      
+      kubectl create secret generic external-redis \
+              --from-literal=REDIS_HOST=$(cat /cdapp/cdappconfig.json | jq -r '.inMemoryDb.hostname') \
+              --from-literal=REDIS_PORT=$(cat /cdapp/cdappconfig.json | jq -r '.inMemoryDb.port') \
+              --from-literal=REDIS_PASSWORD=""  \
+              --from-literal=REDIS_DB=""
+      
+      # https://docs.pulpproject.org/pulp_operator/configuring/database/#configuring-pulp-operator-to-use-an-external-postgresql-installation
+      
+      kubectl create secret generic external-database \
+              --from-literal=POSTGRES_HOST=$(cat /cdapp/cdappconfig.json | jq -r '.database.hostname')  \
+              --from-literal=POSTGRES_PORT=5432  \
+              --from-literal=POSTGRES_USERNAME=$(cat /cdapp/cdappconfig.json | jq -r '.database.adminUsername')  \
+              --from-literal=POSTGRES_PASSWORD=$(cat /cdapp/cdappconfig.json | jq -r '.database.adminPassword')  \
+              --from-literal=POSTGRES_DB_NAME=$(cat /cdapp/cdappconfig.json | jq -r '.database.name') \
+              --from-literal=POSTGRES_SSLMODE=disable
+      
+      until kubectl apply -f- <<EOF
+      apiVersion: repo-manager.pulpproject.org/v1alpha1
+      kind: Pulp
+      metadata:
+        name: pulp
+      spec:
+        api:
+          replicas: 2
+        content:
+          replicas: 2
+        worker:
+          replicas: 2
+        web:
+          replicas: 2
+        ingress_type: nodeport
+        pulp_settings:
+          aws_s3_endpoint_url: http://${S3_HOSTNAME}:9000
+        database:
+          external_db_secret: external-database
+        cache:
+          enabled: true
+          external_cache_secret: external-redis
+        object_storage_s3_secret: test-s3
+      EOF
+      do
+        echo "Trying kubectl apply again"
+        sleep 1
+      done
+
+      # FIXME: Look into having the container/pod run and stop, probably a "job" rather than a "deployment" in the clowdapp.
+      # For now, it is useful to have the container running. We can run commands on it.
+      sleep 9999999999
+
 - apiVersion: operators.coreos.com/v1alpha1
   kind: Subscription
   metadata:
@@ -55,8 +145,16 @@ objects:
     - name: pulp-cr-generator
       podSpec:
         # dummy container
-        image: "docker.io/library/postgres:latest"
-        command: ['sleep', '9999999999']
+        image: "registry.redhat.io/openshift4/ose-cli:latest"
+        command: ['bash', '-x', '/tmp/config.sh']
+        volumes:
+        - name: config-sh
+          configMap:
+            name: config-sh-map
+        volumeMounts:
+        - name: config-sh
+          mountPath: /tmp/config.sh
+          subPath: config-sh-file
     database:
       name: pulp-db
       version: 15
