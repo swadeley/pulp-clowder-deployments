@@ -5,7 +5,7 @@
 # --------------------------------------------
 APP_NAME="ingress"  # name of app-sre "application" folder this component lives in
 COMPONENT_NAME="ingress"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
-IMAGE="quay.io/pulp/pulp-rpm"  
+IMAGE="quay.io/pulp/pulp-minimal"
 
 IQE_PLUGINS="ingress"
 IQE_MARKER_EXPRESSION="smoke"

@@ -2,7 +2,7 @@
 
 set -exv
 
-IMAGE="quay.io/pulp/pulp-rpm"
+IMAGE="quay.io/pulp/pulp-minimal"
 IMAGE_TAG=$(git rev-parse --short=7 HEAD)
 
 # Commented out because for the time being, we are building & pushing from
