@@ -103,6 +103,8 @@ objects:
           enabled: true
           external_cache_secret: external-redis
         object_storage_s3_secret: test-s3
+        image: "${IMAGE}"
+        image_version: "${IMAGE_VERSION}"
       EOF
       do
         echo "Trying kubectl apply again"
@@ -164,4 +166,10 @@ objects:
 parameters:
   - name: ENV_NAME
     description: Specify your (ephemeral) namespace
-    eequired: true
+    required: true
+  - name: IMAGE
+    description: Specify which container image the operator will deploy as Pulp services.
+    value: quay.io/pulp/pulp
+  - name: IMAGE_VERSION
+    description: Specify the tag or hash for the image deployed by the operator.
+    value: latest
