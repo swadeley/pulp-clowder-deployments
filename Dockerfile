@@ -16,7 +16,7 @@ ENV PULP_HTTPS=false
 ENV PULP_STATIC_ROOT=/var/lib/operator/static/
 
 # Install updates & dnf plugins before disabling python36 to prevent errors
-COPY images/pulp-rpm-ostree-ubi/*.repo /etc/yum.repos.d/
+COPY images/repos.d/*.repo /etc/yum.repos.d/
 RUN dnf -y install dnf-plugins-core && \
     dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm && \
     # dnf config-manager --set-enabled powertools && \
@@ -34,34 +34,29 @@ RUN dnf -y module enable python38
 #
 # TODO: Investigate differences between `dnf builddep createrepo_c` vs the list
 # of dependencies below. For example, drpm-devel.
-RUN dnf -y install python38 python38-cryptography python38-devel
-RUN dnf -y install openssl openssl-devel
-RUN dnf -y install openldap-devel
-RUN dnf -y install wget git
-RUN dnf -y install python3-psycopg2
-RUN dnf -y install redhat-rpm-config gcc cargo libffi-devel
-RUN dnf -y install glibc-langpack-en
-RUN dnf -y install python3-libmodulemd
-RUN dnf -y install python3-libcomps
-RUN dnf -y install libpq-devel
-RUN dnf -y install python3-setuptools
-RUN dnf -y install swig
-RUN dnf -y install buildah --exclude container-selinux
-RUN dnf -y install xz
-RUN dnf -y install libmodulemd-devel
-RUN dnf -y install libcomps-devel
-RUN dnf -y install zchunk-devel
-RUN dnf -y install ninja-build
-RUN dnf -y install cairo-devel cmake gobject-introspection-devel cairo-gobject-devel
-RUN dnf -y install libcurl-devel libxml2-devel sqlite-devel #file-devel
-RUN dnf -y install ostree-libs #ostree
-RUN dnf -y install skopeo
-RUN dnf -y install podman
-RUN dnf -y install sudo
-RUN dnf -y install zstd
-RUN dnf -y install doxygen
-RUN dnf -y install graphviz # the dot command
-RUN dnf -y install file-devel
+RUN dnf -y install python38 python38-cryptography python38-devel && \
+    dnf -y install openssl openssl-devel && \
+    dnf -y install openldap-devel && \
+    dnf -y install wget git && \
+    dnf -y install python3-psycopg2 && \
+    dnf -y install redhat-rpm-config gcc cargo libffi-devel && \
+    dnf -y install glibc-langpack-en && \
+    dnf -y install python3-libmodulemd && \
+    dnf -y install python3-libcomps && \
+    dnf -y install libpq-devel && \
+    dnf -y install python3-setuptools && \
+    dnf -y install swig && \
+    dnf -y install buildah --exclude container-selinux && \
+    dnf -y install xz && \
+    dnf -y install libmodulemd-devel && \
+    dnf -y install libcomps-devel && \
+    dnf -y install zchunk-devel && \
+    dnf -y install ninja-build && \
+    dnf -y install cairo-devel cmake gobject-introspection-devel cairo-gobject-devel && \
+    dnf -y install libcurl-devel libxml2-devel sqlite-devel file-devel && \
+    dnf -y install zstd && \
+    dnf -y install doxygen && \
+    dnf -y install graphviz # the dot command
 RUN dnf clean all
 
 # Needed to prevent the wrong version of cryptography from being installed,
@@ -82,8 +77,7 @@ RUN pip3 install --upgrade pip setuptools wheel && \
 RUN pip3 install --upgrade \
   pulpcore \
   pulp-certguard \
-  pulp-rpm \
-  pulp-ostree && \
+  pulp-rpm && \
   rm -rf /root/.cache/pip
 
 RUN sed 's|^#mount_program|mount_program|g' -i /etc/containers/storage.conf
