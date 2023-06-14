@@ -3,11 +3,11 @@
 # --------------------------------------------
 # Options that must be configured by app owner
 # --------------------------------------------
-APP_NAME="ingress"  # name of app-sre "application" folder this component lives in
-COMPONENT_NAME="ingress"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
+APP_NAME="content-sources"  # name of app-sre "application" folder this component lives in
+COMPONENT_NAME="pulp"  # name of app-sre "resourceTemplate" in deploy.yaml for this component
 IMAGE="quay.io/cloudservices/pulp-rpm-ubi"
 
-IQE_PLUGINS="ingress"
+IQE_PLUGINS="content-sources"
 IQE_MARKER_EXPRESSION="smoke"
 IQE_FILTER_EXPRESSION=""
 IQE_CJI_TIMEOUT="30m"
