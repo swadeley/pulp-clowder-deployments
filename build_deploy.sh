@@ -2,7 +2,7 @@
 
 set -exv
 
-IMAGE="quay.io/cloudservices/pulp-rpm-ostree-ubi"
+IMAGE="quay.io/cloudservices/pulp-rpm-ubi"
 IMAGE_TAG=$(git rev-parse --short=7 HEAD)
 
 # Commented out because for the time being, we are building & pushing from
