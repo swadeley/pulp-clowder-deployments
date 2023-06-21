@@ -114,6 +114,8 @@ objects:
         echo "Trying kubectl apply again"
         sleep 1
       done
+      echo "Dummy output so that 'bonfire deploy --set-image-tag' will not choke, it requires this string to be present"
+      echo "${IMAGE}:${IMAGE_TAG}"
 
       # FIXME: Look into having the container/pod run and stop, probably a "job" rather than a "deployment" in the clowdapp.
       # For now, it is useful to have the container running. We can run commands on it.
@@ -143,7 +145,7 @@ objects:
 - apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdApp
   metadata:
-    name: pulp-clowdapp
+    name: pulp
   #  namespace: "${ENV_NAME}"
   spec:
     envName: "${ENV_NAME}"
