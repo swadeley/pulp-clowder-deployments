@@ -108,6 +108,7 @@ objects:
         object_storage_s3_secret: test-s3
         image: "${IMAGE}"
         image_version: "${IMAGE_TAG}"
+        image_web_version: latest
       EOF
       do
         echo "Trying kubectl apply again"
@@ -149,7 +150,7 @@ objects:
   spec:
     envName: "${ENV_NAME}"
     deployments:
-    - name: pulp-cr-generator
+    - name: cr-generator
       podSpec:
         # dummy container
         image: "registry.redhat.io/openshift4/ose-cli:latest"
