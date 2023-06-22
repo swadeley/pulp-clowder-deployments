@@ -108,6 +108,7 @@ objects:
         object_storage_s3_secret: test-s3
         image: "${IMAGE}"
         image_version: "${IMAGE_TAG}"
+        inhibit_version_constraint: true
       EOF
       do
         echo "Trying kubectl apply again"
@@ -133,6 +134,7 @@ objects:
     name: pulp-operator
     source: community-operators
     sourceNamespace: openshift-marketplace
+    startingCSV: pulp-operator.v1.0.0-alpha.7
     config:
       resources:
         requests:
