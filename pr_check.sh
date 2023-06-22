@@ -8,7 +8,7 @@ COMPONENT_NAME="content-sources-pulp"  # name of app-sre "resourceTemplate" in d
 IMAGE="quay.io/cloudservices/pulp-rpm-ubi"
 
 IQE_PLUGINS="content-sources"
-IQE_MARKER_EXPRESSION="smoke"
+IQE_MARKER_EXPRESSION="api"
 IQE_FILTER_EXPRESSION=""
 IQE_CJI_TIMEOUT="30m"
 
