@@ -149,6 +149,8 @@ objects:
   #  namespace: "${ENV_NAME}"
   spec:
     envName: "${ENV_NAME}"
+    testing:
+      iqePlugin: content-sources
     deployments:
     - name: cr-generator
       podSpec:
