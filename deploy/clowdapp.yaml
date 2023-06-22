@@ -144,7 +144,7 @@ objects:
 - apiVersion: cloud.redhat.com/v1alpha1
   kind: ClowdApp
   metadata:
-    name: pulp
+    name: content-sources-pulp
   #  namespace: "${ENV_NAME}"
   spec:
     envName: "${ENV_NAME}"
