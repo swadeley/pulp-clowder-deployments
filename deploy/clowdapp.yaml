@@ -55,7 +55,6 @@ objects:
         s3-access-key-id: $S3_ACCESS_KEY_ID
         s3-secret-access-key: $S3_SECRET_ACCESS_KEY
         s3-bucket-name: $S3_BUCKET_NAME
-        s3-endpoint: http://${S3_HOSTNAME}:9000
       EOF
       do
         echo "Trying kubectl apply again"
@@ -98,6 +97,10 @@ objects:
         ingress_type: nodeport
         pulp_settings:
           domain_enabled: "${DOMAIN_ENABLED}"
+          aws_s3_endpoint_url: http://${S3_HOSTNAME}:9000
+          aws_storage_bucket_name: "${S3_BUCKET_NAME}"
+          aws_access_key_id: "${S3_ACCESS_KEY_ID}"
+          aws_secret_access_key: "${S3_SECRET_ACCESS_KEY}"
         database:
           external_db_secret: external-database
         cache:
