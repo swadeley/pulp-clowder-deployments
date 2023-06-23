@@ -96,6 +96,8 @@ objects:
         web:
           replicas: 2
         ingress_type: nodeport
+        pulp_settings:
+          domain_enabled: "${DOMAIN_ENABLED}"
         database:
           external_db_secret: external-database
         cache:
@@ -177,3 +179,6 @@ parameters:
   - name: IMAGE_TAG
     description: Specify the tag or hash for the image deployed by the operator.
     value: latest
+  - name: DOMAIN_ENABLED
+    description: Pulp setting that determines if domains are enabled.
+    value: "False"
