@@ -1,7 +1,7 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  app: content-sources-pulp-clowdapp
+  app: content-sources-pulp
   template: content-sources-pulp-clowdapp
 metadata:
   annotations:
