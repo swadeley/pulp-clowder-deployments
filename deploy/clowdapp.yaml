@@ -1,8 +1,8 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  app: pulp-clowdapp
-  template: pulp-clowdapp
+  app: content-sources-pulp-clowdapp
+  template: content-sources-pulp-clowdapp
 metadata:
   annotations:
     description: |-
@@ -21,7 +21,7 @@ metadata:
     iconClass: icon-python
   labels:
     samples.operator.openshift.io/managed: "false"
-  name: pulp-clowdapp
+  name: content-sources-pulp-clowdapp
 objects:
 - apiVersion: v1
   kind: ConfigMap
