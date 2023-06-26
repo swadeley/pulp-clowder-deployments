@@ -159,7 +159,7 @@ objects:
     - name: cr-generator
       podSpec:
         # dummy container
-        image: "registry.redhat.io/openshift4/ose-cli:latest"
+        image: "quay.io/openshift/origin-cli:latest"
         command: ['bash', '-x', '/tmp/config.sh']
         volumes:
         - name: config-sh
