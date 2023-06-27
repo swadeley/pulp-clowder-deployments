@@ -175,7 +175,7 @@ objects:
       version: 15
     inMemoryDb: true
     objectStore:
-      - pulp-bucket
+      - content-sources-pulp-s3
 parameters:
   - name: ENV_NAME
     description: Specify your (ephemeral) namespace
