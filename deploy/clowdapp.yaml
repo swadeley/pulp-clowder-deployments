@@ -157,7 +157,7 @@ objects:
     testing:
       iqePlugin: content-sources
     deployments:
-    - name: cr-generator
+    - name: app
       podSpec:
         # dummy container
         image: "quay.io/openshift/origin-cli:latest"
