@@ -88,13 +88,13 @@ objects:
         name: pulp
       spec:
         api:
-          replicas: 2
+          replicas: ${PULP_API_REPLICAS}
         content:
-          replicas: 2
+          replicas: ${PULP_CONTENT_REPLICAS}
         worker:
-          replicas: 2
+          replicas: ${PULP_WORKER_REPLICAS}
         web:
-          replicas: 2
+          replicas: ${PULP_WEB_REPLICAS}
         ingress_type: nodeport
         pulp_settings:
           domain_enabled: ${DOMAIN_ENABLED}
@@ -189,3 +189,15 @@ parameters:
   - name: DOMAIN_ENABLED
     description: Pulp setting that determines if domains are enabled.
     value: "false"
+  - name: PULP_API_REPLICAS
+    description: Number of pulp api replicas
+    value: "1"
+  - name: PULP_WEB_REPLICAS
+    description: Number of pulp web replicas
+    value: "1"
+  - name: PULP_WORKER_REPLICAS
+    description: Number of pulp workers
+    value: "1"
+  - name: PULP_CONTENT_REPLICAS
+    description: Number of pulp content replicas
+    value: "1"
