@@ -70,7 +70,8 @@ RUN pip3 install --upgrade pip setuptools wheel && \
          gunicorn \
          python-nginx \
          django-storages\[boto3,azure]\>=1.12.2 \
-         requests\[use_chardet_on_py3] && \
+         requests\[use_chardet_on_py3] \
+         importlib-metadata && \
          rm -rf /root/.cache/pip
 
 

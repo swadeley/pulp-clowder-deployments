@@ -176,6 +176,33 @@ objects:
     inMemoryDb: true
     objectStore:
       - content-sources-pulp-s3
+- apiVersion: repo-manager.pulpproject.org/v1beta2
+  kind: Pulp
+  metadata:
+    name: pulp
+  spec:
+    api:
+      replicas: "${{PULP_API_REPLICAS}}"
+    content:
+      replicas: "${{PULP_CONTENT_REPLICAS}}"
+    worker:
+      replicas: "${{PULP_WORKER_REPLICAS}}"
+    web:
+      replicas: "${{PULP_WEB_REPLICAS}}"
+    ingress_type: nodeport
+    pulp_settings:
+      domain_enabled: ${DOMAIN_ENABLED}
+      redis_db: 1
+    database:
+      external_db_secret: content-sources-pulp-db
+    cache:
+      enabled: true
+      external_cache_secret: content-sources-pulp-in-memory-db
+    object_storage_s3_secret: content-sources-pulp-s3
+    image: "${IMAGE}"
+    image_version: "${IMAGE_TAG}"
+    image_web_version: latest
+    inhibit_version_constraint: true
 parameters:
   - name: ENV_NAME
     description: Specify your (ephemeral) namespace
