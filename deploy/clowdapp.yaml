@@ -50,7 +50,7 @@ objects:
       apiVersion: v1
       kind: Secret
       metadata:
-        name: 'test-s3'
+        name: 'content-sources-pulp-s3'
       stringData:
         s3-access-key-id: $S3_ACCESS_KEY_ID
         s3-secret-access-key: $S3_SECRET_ACCESS_KEY
@@ -65,7 +65,7 @@ objects:
       
       # https://docs.pulpproject.org/pulp_operator/configuring/cache/#configuring-pulp-operator-to-use-an-external-redis-installation
       
-      kubectl create secret generic external-redis \
+      kubectl create secret generic content-sources-pulp-in-memory-db \
               --from-literal=REDIS_HOST=$(cat /cdapp/cdappconfig.json | jq -r '.inMemoryDb.hostname') \
               --from-literal=REDIS_PORT=$(cat /cdapp/cdappconfig.json | jq -r '.inMemoryDb.port') \
               --from-literal=REDIS_PASSWORD=""  \
@@ -81,43 +81,6 @@ objects:
               --from-literal=POSTGRES_DB_NAME=$(cat /cdapp/cdappconfig.json | jq -r '.database.name') \
               --from-literal=POSTGRES_SSLMODE=disable
       
-      until kubectl apply -f- <<EOF
-      apiVersion: repo-manager.pulpproject.org/v1beta2
-      kind: Pulp
-      metadata:
-        name: pulp
-      spec:
-        api:
-          replicas: ${PULP_API_REPLICAS}
-        content:
-          replicas: ${PULP_CONTENT_REPLICAS}
-        worker:
-          replicas: ${PULP_WORKER_REPLICAS}
-        web:
-          replicas: ${PULP_WEB_REPLICAS}
-        ingress_type: nodeport
-        pulp_settings:
-          domain_enabled: ${DOMAIN_ENABLED}
-          redis_db: 1
-          aws_s3_endpoint_url: http://${S3_HOSTNAME}:9000
-          aws_storage_bucket_name: "${S3_BUCKET_NAME}"
-          aws_access_key_id: "${S3_ACCESS_KEY_ID}"
-          aws_secret_access_key: "${S3_SECRET_ACCESS_KEY}"
-        database:
-          external_db_secret: external-database
-        cache:
-          enabled: true
-          external_cache_secret: external-redis
-        object_storage_s3_secret: test-s3
-        image: "${IMAGE}"
-        image_version: "${IMAGE_TAG}"
-        image_web_version: latest
-        inhibit_version_constraint: true
-      EOF
-      do
-        echo "Trying kubectl apply again"
-        sleep 1
-      done
       echo "Dummy output so that 'bonfire deploy --set-image-tag' will not choke, it requires this string to be present"
       echo "${IMAGE}:${IMAGE_TAG}"
 
@@ -176,6 +139,33 @@ objects:
     inMemoryDb: true
     objectStore:
       - content-sources-pulp-s3
+- apiVersion: repo-manager.pulpproject.org/v1beta2
+  kind: Pulp
+  metadata:
+    name: pulp
+  spec:
+    api:
+      replicas: "${{PULP_API_REPLICAS}}"
+    content:
+      replicas: "${{PULP_CONTENT_REPLICAS}}"
+    worker:
+      replicas: "${{PULP_WORKER_REPLICAS}}"
+    web:
+      replicas: "${{PULP_WEB_REPLICAS}}"
+    ingress_type: nodeport
+    pulp_settings:
+      domain_enabled: ${{DOMAIN_ENABLED}}
+      redis_db: 1
+    database:
+      external_db_secret: ${DB_SECRET_NAME}
+    cache:
+      enabled: true
+      external_cache_secret: content-sources-pulp-in-memory-db
+    object_storage_s3_secret: content-sources-pulp-s3
+    image: "${IMAGE}"
+    image_version: "${IMAGE_TAG}"
+    image_web_version: latest
+    inhibit_version_constraint: true
 parameters:
   - name: ENV_NAME
     description: Specify your (ephemeral) namespace
@@ -201,3 +191,5 @@ parameters:
   - name: PULP_CONTENT_REPLICAS
     description: Number of pulp content replicas
     value: "1"
+  - name: DB_SECRET_NAME
+    value: "external-database"
