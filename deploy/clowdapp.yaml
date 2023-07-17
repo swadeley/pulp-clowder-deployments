@@ -50,7 +50,7 @@ objects:
       apiVersion: v1
       kind: Secret
       metadata:
-        name: 'content-sources-pulp-s3'
+        name: 'content-sources-pulp-s3-for-operator'
       stringData:
         s3-access-key-id: $S3_ACCESS_KEY_ID
         s3-secret-access-key: $S3_SECRET_ACCESS_KEY
@@ -161,7 +161,7 @@ objects:
     cache:
       enabled: true
       external_cache_secret: content-sources-pulp-in-memory-db
-    object_storage_s3_secret: content-sources-pulp-s3
+    object_storage_s3_secret: content-sources-pulp-s3-for-operator
     image: "${IMAGE}"
     image_version: "${IMAGE_TAG}"
     image_web_version: latest
@@ -192,4 +192,5 @@ parameters:
     description: Number of pulp content replicas
     value: "1"
   - name: DB_SECRET_NAME
+    description: Name of the secret with external database information for the operator.
     value: "external-database"
