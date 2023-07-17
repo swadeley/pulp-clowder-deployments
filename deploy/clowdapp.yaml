@@ -157,7 +157,7 @@ objects:
       domain_enabled: ${{DOMAIN_ENABLED}}
       redis_db: 1
     database:
-      external_db_secret: "${{DB_SECRET_NAME}"
+      external_db_secret: "${{DB_SECRET_NAME}}"
     cache:
       enabled: true
       external_cache_secret: content-sources-pulp-in-memory-db
