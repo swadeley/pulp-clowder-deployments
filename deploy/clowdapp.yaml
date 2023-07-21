@@ -32,7 +32,7 @@ objects:
       #!/bin/bash
       export PATH=${PATH}:/tmp/bin
 
-      kubectl get secret > /dev/null 2>&1
+      kubectl get secret
       if [ $? -ne 0 ]; then
          echo "Stopping here because we are running on the staging environment or we cannot retrieve secrets"
          sleep 9999999999
