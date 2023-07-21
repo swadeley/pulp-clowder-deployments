@@ -31,6 +31,13 @@ objects:
     config-sh-file: |
       #!/bin/bash
       export PATH=${PATH}:/tmp/bin
+
+      kubectl get secret > /dev/null 2>&1
+      if [ $? -ne 0 ]; then
+         echo "Exiting script because we are running on the staging environment or we cannot retrieve secrets"
+         exit 0
+      fi
+
       mkdir /tmp/bin
       cd /tmp/bin
       curl -L -O https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
