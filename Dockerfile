@@ -26,6 +26,8 @@ RUN dnf -y install dnf-plugins-core && \
 RUN dnf -y module disable python36
 RUN dnf -y module enable python38
 
+# lsof & procps-ng(`ps`) are needed for running pytests (unit/functional)
+#
 # glibc-langpack-en is needed to provide the en_US.UTF-8 locale, which Pulp
 # seems to need.
 #
@@ -38,6 +40,7 @@ RUN dnf -y install python38 python38-cryptography python38-devel && \
     dnf -y install openssl openssl-devel && \
     dnf -y install openldap-devel && \
     dnf -y install wget git && \
+    dnf -y install lsof procps-ng && \
     dnf -y install python3-psycopg2 && \
     dnf -y install redhat-rpm-config gcc cargo libffi-devel && \
     dnf -y install glibc-langpack-en && \
