@@ -26,7 +26,7 @@ objects:
 - apiVersion: v1
   kind: ConfigMap
   metadata:
-    name: config-sh-map
+    name: cs-config-sh-map
   data:
     config-sh-file: |
       #!/bin/bash
@@ -138,7 +138,7 @@ objects:
         volumes:
         - name: config-sh
           configMap:
-            name: config-sh-map
+            name: cs-config-sh-map
         volumeMounts:
         - name: config-sh
           mountPath: /tmp/config.sh
@@ -152,7 +152,7 @@ objects:
 - apiVersion: repo-manager.pulpproject.org/v1beta2
   kind: Pulp
   metadata:
-    name: content-sources-pulp
+    name: cs-pulp
   spec:
     api:
       replicas: "${{PULP_API_REPLICAS}}"
