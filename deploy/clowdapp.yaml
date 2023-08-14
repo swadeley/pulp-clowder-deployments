@@ -156,12 +156,42 @@ objects:
   spec:
     api:
       replicas: "${{PULP_API_REPLICAS}}"
+      gunicorn_workers: 1
+      resource_requirements:
+        requests:
+          cpu: 1
+          memory: 256Mi
+        limits:
+          cpu: 1
+          memory: 512Mi
     content:
       replicas: "${{PULP_CONTENT_REPLICAS}}"
-    worker:
-      replicas: "${{PULP_WORKER_REPLICAS}}"
+      gunicorn_workers: 1
+      resource_requirements:
+        requests:
+          cpu: 1
+          memory: 256Mi
+        limits:
+          cpu: 1
+          memory: 512Mi
     web:
       replicas: "${{PULP_WEB_REPLICAS}}"
+      resource_requirements:
+        requests:
+          cpu: 1
+          memory: 128Mi
+        limits:
+          cpu: 1
+          memory: 128Mi
+    worker:
+      replicas: "${{PULP_WORKER_REPLICAS}}"
+      resource_requirements:
+        requests:
+          cpu: 1
+          memory: 256Mi
+        limits:
+          cpu: 1
+          memory: 512Mi
     ingress_type: nodeport
     pulp_settings:
       domain_enabled: ${{DOMAIN_ENABLED}}
