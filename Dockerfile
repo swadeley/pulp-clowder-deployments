@@ -79,7 +79,7 @@ RUN pip3 install --upgrade pip setuptools wheel && \
 
 
 RUN pip3 install --upgrade \
-  pulpcore \
+  pulpcore~=3.32.0 \
   pulp-certguard \
   pulp-rpm && \
   rm -rf /root/.cache/pip
