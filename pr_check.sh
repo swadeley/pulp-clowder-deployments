@@ -7,17 +7,18 @@ IMAGE="quay.io/cloudservices/pulp-rpm-ubi"
 # be explicit about what to build
 DOCKERFILE=Dockerfile
 
-# Include all impacted HMS apps for deployment
-EXTRA_DEPLOY_ARGS="provisioning sources image-builder-crc"
-
 IQE_PLUGINS="content-sources"
 IQE_MARKER_EXPRESSION="api"
 IQE_FILTER_EXPRESSION=""
+IQE_ENV="ephemeral"
 IQE_CJI_TIMEOUT="30m"
 
 # Install bonfire repo/initialize
 CICD_URL=https://raw.githubusercontent.com/RedHatInsights/cicd-tools/master
 curl -s $CICD_URL/bootstrap.sh > .cicd_bootstrap.sh && source .cicd_bootstrap.sh
+
+# Include all impacted HMS apps for deployment
+EXTRA_DEPLOY_ARGS="--set-parameter content-sources-pulp/IMAGE_TAG=${IMAGE_TAG} provisioning sources image-builder-crc"
 
 source $CICD_ROOT/build.sh
 source $APP_ROOT/unit_test.sh
