@@ -94,6 +94,8 @@ objects:
               --from-literal=POSTGRES_DB_NAME=$(cat /cdapp/cdappconfig.json | jq -r '.database.name') \
               --from-literal=POSTGRES_SSLMODE=disable
       
+      HOST=${ENV_NAME}.apps.c-rh-c-eph.8p0c.p1.openshiftapps.com
+
       # Create an ingress for the content app
       kubectl apply -f- <<EOF
       apiVersion: networking.k8s.io/v1
@@ -102,7 +104,7 @@ objects:
         name: pulp-content-ingress
       spec:
         rules:
-          - host: ${ENV_NAME}.apps.c-rh-c-eph.8p0c.p1.openshiftapps.com
+          - host: "${HOST}"
             http:
               paths:
                 - path: /pulp/content/
@@ -113,6 +115,8 @@ objects:
                       port:
                         number: 24816
       EOF
+
+      kubectl patch pulp cs-pulp --type='json' -p='[{"op": "replace", "path": "/spec/pulp_settings/content_origin", "value": "'http://"${HOST}"'"}]'
 
       echo "Dummy output so that 'bonfire deploy --set-image-tag' will not choke, it requires this string to be present"
       echo "${IMAGE}:${IMAGE_TAG}"
@@ -219,6 +223,7 @@ objects:
     pulp_settings:
       domain_enabled: ${{DOMAIN_ENABLED}}
       redis_db: 1
+      content_origin: ${{CONTENT_ORIGIN}}
     database:
       external_db_secret: ${{DB_SECRET_NAME}}
     cache:
@@ -326,3 +331,6 @@ parameters:
   - name: DB_SECRET_NAME
     description: Name of the secret with external database information for the operator.
     value: "content-sources-pulp-external-database"
+  - name: CONTENT_ORIGIN
+    description: The value for the CONTENT_ORIGIN pulp setting
+    value: http://cs-pulp-content-svc.local
