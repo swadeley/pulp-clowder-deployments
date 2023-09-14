@@ -54,6 +54,8 @@ objects:
       #S3_REGION='us-east-1'
       S3_HOSTNAME=$(cat /cdapp/cdappconfig.json | jq -r '.objectStore.hostname')
 
+      ENV_NAME=$(cat /cdapp/cdappconfig.json | ./jq -r '.metadata.envName')
+
       # FIXME: Find out why these 2 `kubectl apply` commands keep getting killed.
       # It is hard to debug inside the container. OOM could be to blame, but we cannot run `dmesg`.
       until kubectl apply -f- <<EOF
@@ -92,6 +94,26 @@ objects:
               --from-literal=POSTGRES_DB_NAME=$(cat /cdapp/cdappconfig.json | jq -r '.database.name') \
               --from-literal=POSTGRES_SSLMODE=disable
       
+      # Create an ingress for the content app
+      kubectl apply -f- <<EOF
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: pulp-content-ingress
+      spec:
+        rules:
+          - host: ${ENV_NAME}.apps.c-rh-c-eph.8p0c.p1.openshiftapps.com
+            http:
+              paths:
+                - path: /pulp/content/
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: cs-pulp-content-svc
+                      port:
+                        number: 24816
+      EOF
+
       echo "Dummy output so that 'bonfire deploy --set-image-tag' will not choke, it requires this string to be present"
       echo "${IMAGE}:${IMAGE_TAG}"
 
